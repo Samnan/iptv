@@ -22,7 +22,7 @@ npm run dev
 
 ```
 
-Open http://localhost:5173, select either one of the sample m3u files provided in the `channels` folder in the repo.
+Open http://localhost:5173, select either one of the sample m3u files provided in the `channels` folder in the repo (or any other valid m3u channel list).
 
 ## M3U file management
 
@@ -30,7 +30,7 @@ Once you open an m3u file, you can click the heart icon to mark channels as favo
 
 Once you are done marking channels favourite, you can export only those channels into a new m3u file for your use.
 
-Load the new file in the app next time to see only your favurite channels!
+Load the new file in the app next time to see only your favourite channels!
 
 ## Building static version
 
@@ -45,6 +45,6 @@ For a quick fire web server, you can install node `http-server` package and run 
 
 ## Sample Screenshots
 
-![./screenshots/screenshot-1.png](Screenshot 1)
+<img width="1378" height="754" alt="image" src="https://github.com/user-attachments/assets/33a13e87-1249-46b3-9b87-b28087cc6915" />
 
-![./screenshots/screenshot-2.png](Screenshot 2)
+<img width="1371" height="750" alt="image" src="https://github.com/user-attachments/assets/8cb4a137-283b-42ea-925f-90867389606e" />

@@ -43,8 +43,14 @@ npm run build
 It will generate static html/js based site that you can run on any web server.
 For a quick fire web server, you can install node `http-server` package and run the build on local machine quickly.
 
+
+## License
+
+This project is released under [Apache 2.0 License](LICENSE)
+
 ## Sample Screenshots
 
-<img width="1378" height="754" alt="image" src="https://github.com/user-attachments/assets/33a13e87-1249-46b3-9b87-b28087cc6915" />
+<img width="689" height="377" alt="image" src="https://github.com/user-attachments/assets/33a13e87-1249-46b3-9b87-b28087cc6915" />
 
-<img width="1371" height="750" alt="image" src="https://github.com/user-attachments/assets/8cb4a137-283b-42ea-925f-90867389606e" />
+
+<img width="689" height="377" alt="image" src="https://github.com/user-attachments/assets/8cb4a137-283b-42ea-925f-90867389606e" />

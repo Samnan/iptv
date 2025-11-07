@@ -45,5 +45,6 @@ For a quick fire web server, you can install node `http-server` package and run 
 
 ## Sample Screenshots
 
-(./screenshots/screenshot-1.png)[Screenshot 1]
-(./screenshots/screenshot-2.png)[Screenshot 2]
+![./screenshots/screenshot-1.png](Screenshot 1)
+
+![./screenshots/screenshot-2.png](Screenshot 2)

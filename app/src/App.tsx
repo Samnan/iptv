@@ -22,6 +22,7 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [currentListId, setCurrentListIdState] = useState<string | null>(null);
   const [savedLists, setSavedLists] = useState<SavedChannelList[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Load saved lists and current list on mount
   useEffect(() => {
@@ -60,6 +61,7 @@ function App() {
       setCurrentListIdState(listId);
       setCurrentListId(listId);
       setSavedLists(getAllSavedLists());
+      setSearchQuery('');
       
       if (parsed.channels.length > 0) {
         setSelectedChannel(parsed.channels[0]);
@@ -103,6 +105,7 @@ function App() {
       setSelectedChannel(null);
       setCurrentListIdState(null);
       setCurrentListId(null);
+      setSearchQuery('');
       return;
     }
     
@@ -111,6 +114,7 @@ function App() {
       setChannels(selectedList.channels);
       setCurrentListIdState(listId);
       setCurrentListId(listId);
+      setSearchQuery('');
       if (selectedList.channels.length > 0) {
         setSelectedChannel(selectedList.channels[0]);
       } else {
@@ -129,6 +133,14 @@ function App() {
     const m3uContent = generateM3U(favoriteChannels);
     downloadM3U(m3uContent, 'favorites.m3u');
   };
+
+  // Filter channels based on search query
+  const filteredChannels = searchQuery.trim() === '' 
+    ? channels 
+    : channels.filter(channel => 
+        channel.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (channel.group && channel.group.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -201,12 +213,14 @@ function App() {
               isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
             } fixed lg:relative z-20 lg:z-0`}>
               <ChannelList
-                channels={channels}
+                channels={filteredChannels}
                 selectedChannel={selectedChannel}
                 onChannelSelect={handleChannelSelect}
                 onToggleFavorite={handleToggleFavorite}
                 onDeleteChannel={handleDeleteChannel}
                 onExportFavorites={handleExportFavorites}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
               />
             </div>
             

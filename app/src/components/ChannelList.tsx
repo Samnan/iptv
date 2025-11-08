@@ -1,5 +1,4 @@
-import React from 'react';
-import { Heart, Trash2, Play, Users, Star } from 'lucide-react';
+import { Heart, Trash2, Play, Users, Star, Search } from 'lucide-react';
 import { Channel } from '../types/Channel';
 
 interface ChannelListProps {
@@ -9,6 +8,8 @@ interface ChannelListProps {
   onToggleFavorite: (channelId: string) => void;
   onDeleteChannel: (channelId: string) => void;
   onExportFavorites: () => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
 }
 
 export function ChannelList({ 
@@ -17,7 +18,9 @@ export function ChannelList({
   onChannelSelect, 
   onToggleFavorite, 
   onDeleteChannel,
-  onExportFavorites 
+  onExportFavorites,
+  searchQuery,
+  onSearchChange
 }: ChannelListProps) {
   const favoriteChannels = channels.filter(channel => channel.isFavorite);
   const groupedChannels = channels.reduce((acc, channel) => {
@@ -37,14 +40,27 @@ export function ChannelList({
           </span>
         </div>
         
-        <button
-          onClick={onExportFavorites}
-          disabled={favoriteChannels.length === 0}
-          className="w-full flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Star className="w-4 h-4 mr-2" />
-          Export Favorites ({favoriteChannels.length})
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={onExportFavorites}
+            disabled={favoriteChannels.length === 0}
+            className="w-1/2 flex items-center justify-center px-2 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          >
+            <Star className="w-4 h-4 mr-1" />
+            <span className="truncate">Export ({favoriteChannels.length})</span>
+          </button>
+          
+          <div className="w-1/2 relative">
+            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder="Search channels..."
+              className="w-full pl-8 pr-2 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">

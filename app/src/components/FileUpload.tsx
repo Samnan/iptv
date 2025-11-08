@@ -15,15 +15,27 @@ export function FileUpload({ onFileUpload, isLoading }: FileUploadProps) {
 
     if (!file.name.toLowerCase().endsWith('.m3u')) {
       alert('Please select a valid .m3u file');
+      // Reset input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
       return;
     }
 
     try {
       const content = await file.text();
       onFileUpload(content, file.name);
+      // Reset input so the same file can be selected again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } catch (error) {
       console.error('Error reading file:', error);
       alert('Error reading file. Please try again.');
+      // Reset input on error
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 

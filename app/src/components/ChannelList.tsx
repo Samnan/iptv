@@ -60,8 +60,10 @@ export function ChannelList({
             {groupChannels.map((channel) => (
               <div
                 key={channel.id}
-                className={`p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors ${
-                  selectedChannel?.id === channel.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                className={`p-3 border-b border-gray-100 ${selectedChannel?.id === channel.id ? 'hover:bg-blue-600' : 'hover:bg-gray-50'} transition-colors ${
+                  selectedChannel?.id === channel.id 
+                    ? 'bg-blue-600 border-l-4 border-l-blue-800 text-blue-50'
+                    : ''
                 }`}
               >
                 <div className="flex items-center space-x-3">
@@ -86,10 +88,10 @@ export function ChannelList({
                     </div>
                     
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-gray-800 truncate group-hover:text-blue-600 transition-colors">
+                      <h3 className="font-medium {selectedChannel?.id === channel.id ? 'text-blue-50' : 'text-gray-800'} truncate  transition-colors">
                         {channel.name}
                       </h3>
-                      <p className="text-xs text-gray-500 truncate">
+                      <p className="text-xs {selectedChannel?.id === channel.id ? 'text-blue-50' : 'text-gray-500'} truncate">
                         {new URL(channel.url).hostname}
                       </p>
                     </div>
@@ -101,7 +103,7 @@ export function ChannelList({
                       className={`p-1.5 rounded-full transition-colors ${
                         channel.isFavorite 
                           ? 'text-red-500 hover:bg-red-50' 
-                          : 'text-gray-400 hover:bg-gray-100 hover:text-red-500'
+                          : selectedChannel?.id === channel.id ? 'text-blue-50 hover:bg-blue-50' : 'text-gray-400 hover:bg-gray-100 hover:text-red-500'}
                       }`}
                     >
                       <Heart className={`w-4 h-4 ${channel.isFavorite ? 'fill-current' : ''}`} />

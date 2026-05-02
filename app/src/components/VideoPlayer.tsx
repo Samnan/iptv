@@ -1,13 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Play, Pause, Volume2, VolumeX, Maximize, AlertCircle, RotateCcw } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Maximize, AlertCircle, RotateCcw, FolderHeart } from 'lucide-react';
 import { Channel } from '../types/Channel';
 import Hls from 'hls.js';
 
 interface VideoPlayerProps {
   channel: Channel | null;
+  onAddToCategory?: (channel: Channel) => void;
 }
 
-export function VideoPlayer({ channel }: VideoPlayerProps) {
+export function VideoPlayer({ channel, onAddToCategory }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -251,6 +252,14 @@ export function VideoPlayer({ channel }: VideoPlayerProps) {
               <RotateCcw className="w-4 h-4" />
             </button>
             
+            <button
+              onClick={() => channel && onAddToCategory?.(channel)}
+              className="w-8 h-8 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full flex items-center justify-center text-white transition-colors"
+              title="Add to category list"
+            >
+              <FolderHeart className="w-4 h-4" />
+            </button>
+
             <button
               onClick={handleFullscreen}
               disabled={hasError}

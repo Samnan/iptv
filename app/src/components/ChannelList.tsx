@@ -1,5 +1,6 @@
-import { Heart, Trash2, Play, Users, Star, Search } from 'lucide-react';
+import { Heart, Trash2, Play, Users, Star, Search, FolderHeart, Download } from 'lucide-react';
 import { Channel } from '../types/Channel';
+import { SavedChannelList } from '../utils/localStorage';
 
 interface ChannelListProps {
   channels: Channel[];
@@ -8,6 +9,9 @@ interface ChannelListProps {
   onToggleFavorite: (channelId: string) => void;
   onDeleteChannel: (channelId: string) => void;
   onExportFavorites: () => void;
+  onAddToCategory: (channel: Channel) => void;
+  categories: SavedChannelList[];
+  onDownloadCategory: (category: SavedChannelList) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
 }
@@ -19,6 +23,9 @@ export function ChannelList({
   onToggleFavorite, 
   onDeleteChannel,
   onExportFavorites,
+  onAddToCategory,
+  categories,
+  onDownloadCategory,
   searchQuery,
   onSearchChange
 }: ChannelListProps) {
@@ -40,17 +47,8 @@ export function ChannelList({
           </span>
         </div>
         
-        <div className="flex gap-2">
-          <button
-            onClick={onExportFavorites}
-            disabled={favoriteChannels.length === 0}
-            className="w-1/2 flex items-center justify-center px-2 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-          >
-            <Star className="w-4 h-4 mr-1" />
-            <span className="truncate">Export ({favoriteChannels.length})</span>
-          </button>
-          
-          <div className="w-1/2 relative">
+        <div className="flex flex-col gap-2">
+          <div className="relative">
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
@@ -60,6 +58,37 @@ export function ChannelList({
               className="w-full pl-8 pr-2 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={onExportFavorites}
+              disabled={favoriteChannels.length === 0}
+              className="flex-1 flex items-center justify-center px-2 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium"
+            >
+              <Heart className="w-3.5 h-3.5 mr-1 fill-current" />
+              <span>Export Faves ({favoriteChannels.length})</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-4 py-3 border-b border-gray-200 bg-blue-50/50">
+        <h3 className="text-xs font-bold text-blue-800 uppercase tracking-wider mb-2 flex items-center">
+          <Star className="w-3 h-3 mr-1" />
+          My Category Lists
+        </h3>
+        <div className="grid grid-cols-2 gap-2">
+          {categories.map(cat => (
+            <button
+              key={cat.id}
+              onClick={() => onDownloadCategory(cat)}
+              className="flex items-center justify-between px-2 py-1.5 bg-white border border-blue-200 rounded text-xs text-blue-700 hover:bg-blue-100 hover:border-blue-300 transition-all group"
+              title={`Download ${cat.name} M3U`}
+            >
+              <span className="truncate mr-1">{cat.name} ({cat.channels.length})</span>
+              <Download className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+            </button>
+          ))}
         </div>
       </div>
 
@@ -104,10 +133,10 @@ export function ChannelList({
                     </div>
                     
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-medium {selectedChannel?.id === channel.id ? 'text-blue-50' : 'text-gray-800'} truncate  transition-colors">
+                      <h3 className={`font-medium ${selectedChannel?.id === channel.id ? 'text-blue-50' : 'text-gray-800'} truncate transition-colors`}>
                         {channel.name}
                       </h3>
-                      <p className="text-xs {selectedChannel?.id === channel.id ? 'text-blue-50' : 'text-gray-500'} truncate">
+                      <p className={`text-xs ${selectedChannel?.id === channel.id ? 'text-blue-50' : 'text-gray-500'} truncate`}>
                         {new URL(channel.url).hostname}
                       </p>
                     </div>
@@ -115,19 +144,33 @@ export function ChannelList({
                   
                   <div className="flex items-center space-x-1">
                     <button
+                      onClick={() => onAddToCategory(channel)}
+                      className={`p-1.5 rounded-full transition-colors ${
+                        selectedChannel?.id === channel.id ? 'text-blue-50 hover:bg-blue-50 hover:text-blue-600' : 'text-gray-400 hover:bg-gray-100 hover:text-blue-600'}
+                      }`}
+                      title="Add to category list"
+                    >
+                      <FolderHeart className="w-4 h-4" />
+                    </button>
+
+                    <button
                       onClick={() => onToggleFavorite(channel.id)}
                       className={`p-1.5 rounded-full transition-colors ${
                         channel.isFavorite 
                           ? 'text-red-500 hover:bg-red-50' 
-                          : selectedChannel?.id === channel.id ? 'text-blue-50 hover:bg-blue-50' : 'text-gray-400 hover:bg-gray-100 hover:text-red-500'}
+                          : selectedChannel?.id === channel.id ? 'text-blue-50 hover:bg-blue-50 hover:text-blue-600' : 'text-gray-400 hover:bg-gray-100 hover:text-red-500'}
                       }`}
+                      title="Toggle simple favorite"
                     >
                       <Heart className={`w-4 h-4 ${channel.isFavorite ? 'fill-current' : ''}`} />
                     </button>
                     
                     <button
                       onClick={() => onDeleteChannel(channel.id)}
-                      className="p-1.5 rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                      className={`p-1.5 rounded-full transition-colors ${
+                        selectedChannel?.id === channel.id ? 'text-blue-50 hover:bg-red-50 hover:text-red-500' : 'text-gray-400 hover:bg-red-50 hover:text-red-500'}
+                      }`}
+                      title="Delete channel from this playlist"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

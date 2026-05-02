@@ -11,9 +11,12 @@ import {
   getChannelList,
   getCurrentListId,
   setCurrentListId,
+  getAllCategories,
+  addChannelToCategory,
+  saveCategories,
   SavedChannelList 
 } from './utils/localStorage';
-import { Tv, Menu, X } from 'lucide-react';
+import { Tv, Menu, X, Plus, FolderHeart, Download } from 'lucide-react';
 
 function App() {
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -22,12 +25,18 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [currentListId, setCurrentListIdState] = useState<string | null>(null);
   const [savedLists, setSavedLists] = useState<SavedChannelList[]>([]);
+  const [categories, setCategories] = useState<SavedChannelList[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [pendingChannel, setPendingChannel] = useState<Channel | null>(null);
 
   // Load saved lists and current list on mount
   useEffect(() => {
     const lists = getAllSavedLists();
     setSavedLists(lists);
+    
+    const cats = getAllCategories();
+    setCategories(cats);
     
     const savedCurrentListId = getCurrentListId();
     if (savedCurrentListId) {
@@ -134,6 +143,45 @@ function App() {
     downloadM3U(m3uContent, 'favorites.m3u');
   };
 
+  const handleAddToCategory = (channel: Channel) => {
+    setPendingChannel(channel);
+    setShowCategoryModal(true);
+  };
+
+  const confirmAddToCategory = (categoryId: string) => {
+    if (pendingChannel) {
+      const success = addChannelToCategory(categoryId, pendingChannel);
+      if (success) {
+        setCategories(getAllCategories());
+        setShowCategoryModal(false);
+        setPendingChannel(null);
+      }
+    }
+  };
+
+  const handleDownloadCategory = (category: SavedChannelList) => {
+    if (category.channels.length === 0) {
+      alert('This category is empty');
+      return;
+    }
+    const m3uContent = generateM3U(category.channels);
+    downloadM3U(m3uContent, `${category.name.toLowerCase().replace(/\s+/g, '_')}.m3u`);
+  };
+
+  const handleCreateCategory = (name: string) => {
+    if (!name.trim()) return;
+    const newCategory: SavedChannelList = {
+      id: crypto.randomUUID(),
+      name,
+      channels: [],
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    const updated = [...categories, newCategory];
+    setCategories(updated);
+    saveCategories(updated);
+  };
+
   // Filter channels based on search query
   const filteredChannels = searchQuery.trim() === '' 
     ? channels 
@@ -219,6 +267,9 @@ function App() {
                 onToggleFavorite={handleToggleFavorite}
                 onDeleteChannel={handleDeleteChannel}
                 onExportFavorites={handleExportFavorites}
+                onAddToCategory={handleAddToCategory}
+                categories={categories}
+                onDownloadCategory={handleDownloadCategory}
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
               />
@@ -231,7 +282,83 @@ function App() {
               />
             )}
             
-            <VideoPlayer channel={selectedChannel} />
+            <VideoPlayer 
+              channel={selectedChannel} 
+              onAddToCategory={handleAddToCategory}
+            />
+
+            {/* Category Selection Modal */}
+            {showCategoryModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm p-4">
+                <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full overflow-hidden animate-in fade-in zoom-in duration-200">
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-xl font-bold text-gray-800 flex items-center">
+                        <FolderHeart className="w-5 h-5 mr-2 text-blue-600" />
+                        Add to Category
+                      </h3>
+                      <button 
+                        onClick={() => setShowCategoryModal(false)}
+                        className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                      >
+                        <X className="w-5 h-5 text-gray-500" />
+                      </button>
+                    </div>
+                    
+                    <p className="text-sm text-gray-600 mb-4">
+                      Select a category for <span className="font-semibold text-gray-800">{pendingChannel?.name}</span>
+                    </p>
+                    
+                    <div className="space-y-2 max-h-[300px] overflow-y-auto mb-6 pr-1 custom-scrollbar">
+                      {categories.map((cat) => (
+                        <button
+                          key={cat.id}
+                          onClick={() => confirmAddToCategory(cat.id)}
+                          className="w-full text-left px-4 py-3 rounded-lg border border-gray-100 hover:border-blue-300 hover:bg-blue-50 transition-all flex items-center justify-between group"
+                        >
+                          <span className="font-medium text-gray-700 group-hover:text-blue-700">{cat.name}</span>
+                          <Plus className="w-4 h-4 text-gray-400 group-hover:text-blue-500" />
+                        </button>
+                      ))}
+                    </div>
+                    
+                    <div className="pt-4 border-t border-gray-100">
+                      <div className="flex items-center space-x-2">
+                        <input 
+                          type="text" 
+                          placeholder="New category..."
+                          className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              handleCreateCategory((e.target as HTMLInputElement).value);
+                              (e.target as HTMLInputElement).value = '';
+                            }
+                          }}
+                        />
+                        <button 
+                          onClick={(e) => {
+                            const input = (e.currentTarget.previousElementSibling as HTMLInputElement);
+                            handleCreateCategory(input.value);
+                            input.value = '';
+                          }}
+                          className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 px-6 py-4 flex justify-end">
+                    <button
+                      onClick={() => setShowCategoryModal(false)}
+                      className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

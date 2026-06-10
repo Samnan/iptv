@@ -31,6 +31,7 @@ jobs:
         with:
           node-version: 24
           cache: 'npm' # Speeds up builds by caching node_modules
+          cache-dependency-path: ./app/package-lock.json
 
       - name: Install dependencies
         run: cd app && npm ci # Performs a clean, reproducible installation

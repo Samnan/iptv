@@ -36,13 +36,13 @@ jobs:
         run: cd app && npm ci # Performs a clean, reproducible installation
 
       - name: Compile site
-        run: npm run build # Compiles your code into a production folder (e.g., dist, build, or out)
+        run: cd app && npm run build # Compiles your code into a production folder (e.g., dist, build, or out)
 
       - name: Upload compiled files as artifact
         uses: actions/upload-pages-artifact@v3
         with:
           # CHANGE THIS: Point it to your compilation output folder (usually 'dist', 'build', or 'public')
-          path: './dist' 
+          path: './app/dist' 
 
   # Deploy job: Takes the uploaded artifact and publishes it
   deploy:

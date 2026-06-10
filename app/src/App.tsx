@@ -63,7 +63,16 @@ function App() {
     setIsLoading(true);
     try {
       const parsed: ParsedM3U = parseM3U(content);
-      const listName = filename.replace('.m3u', '') || 'Untitled Playlist';
+      const normalizedFilename = (() => {
+        try {
+          const url = new URL(filename);
+          const path = url.pathname.split('/').pop();
+          return path || filename;
+        } catch {
+          return filename;
+        }
+      })();
+      const listName = normalizedFilename.replace(/\.m3u$/i, '') || 'Untitled Playlist';
       const listId = saveChannelList(listName, parsed.channels);
       
       setChannels(parsed.channels);

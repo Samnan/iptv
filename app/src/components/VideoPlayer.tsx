@@ -1,14 +1,21 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize, AlertCircle, RotateCcw, FolderHeart } from 'lucide-react';
 import { Channel } from '../types/Channel';
 import Hls from 'hls.js';
+
+export interface VideoPlayerHandle {
+  togglePlayPause: () => void;
+  toggleMute: () => void;
+  requestFullscreen: () => void;
+}
 
 interface VideoPlayerProps {
   channel: Channel | null;
   onAddToCategory?: (channel: Channel) => void;
 }
 
-export function VideoPlayer({ channel, onAddToCategory }: VideoPlayerProps) {
+export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
+  function VideoPlayer({ channel, onAddToCategory }: VideoPlayerProps, ref) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -121,6 +128,12 @@ export function VideoPlayer({ channel, onAddToCategory }: VideoPlayerProps) {
       videoRef.current.requestFullscreen().catch(console.error);
     }
   };
+
+  useImperativeHandle(ref, () => ({
+    togglePlayPause: handlePlayPause,
+    toggleMute: handleMuteToggle,
+    requestFullscreen: handleFullscreen,
+  }), [handlePlayPause, handleMuteToggle, handleFullscreen]);
 
   const handleRetry = () => {
     if (!channel) return;
@@ -271,5 +284,6 @@ export function VideoPlayer({ channel, onAddToCategory }: VideoPlayerProps) {
         </div>
       </div>
     </div>
-  );
-}
+  )
+});
+

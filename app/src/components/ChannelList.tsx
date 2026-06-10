@@ -113,8 +113,11 @@ export function ChannelList({
               >
                 <div className="flex items-center space-x-3">
                   <button
+                    type="button"
                     onClick={() => onChannelSelect(channel)}
                     className="flex-1 flex items-center space-x-3 text-left group"
+                    tabIndex={0}
+                    aria-selected={selectedChannel?.id === channel.id}
                   >
                     <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                       {channel.logo ? (

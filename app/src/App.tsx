@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FileUpload } from './components/FileUpload';
 import { ChannelList } from './components/ChannelList';
 import { VideoPlayer } from './components/VideoPlayer';
@@ -29,6 +29,13 @@ function App() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [pendingChannel, setPendingChannel] = useState<Channel | null>(null);
+  const videoPlayerRef = useRef<VideoPlayerHandle | null>(null);
+
+  interface VideoPlayerHandle {
+    togglePlayPause: () => void;
+    toggleMute: () => void;
+    requestFullscreen: () => void;
+  }
 
   // Load saved lists and current list on mount
   useEffect(() => {
@@ -58,6 +65,46 @@ function App() {
       setSavedLists(getAllSavedLists());
     }
   }, [channels, currentListId]);
+
+  useEffect(() => {
+    const handleRemoteKeyDown = (event: KeyboardEvent) => {
+      const { key } = event;
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+
+      const navigationKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', ' ', 'MediaPlayPause'];
+      if (!navigationKeys.includes(key)) return;
+      event.preventDefault();
+
+      if (channels.length === 0) return;
+
+      const filteredChannelsForNav = searchQuery.trim() === ''
+        ? channels
+        : channels.filter(channel =>
+            channel.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (channel.group && channel.group.toLowerCase().includes(searchQuery.toLowerCase()))
+          );
+
+      if (filteredChannelsForNav.length === 0) return;
+
+      const selectedIndex = filteredChannelsForNav.findIndex(channel => channel.id === selectedChannel?.id);
+      if (key === 'ArrowDown') {
+        const nextIndex = selectedIndex < filteredChannelsForNav.length - 1 ? selectedIndex + 1 : 0;
+        setSelectedChannel(filteredChannelsForNav[nextIndex]);
+      } else if (key === 'ArrowUp') {
+        const prevIndex = selectedIndex > 0 ? selectedIndex - 1 : filteredChannelsForNav.length - 1;
+        setSelectedChannel(filteredChannelsForNav[prevIndex]);
+      } else if (key === 'ArrowLeft') {
+        setIsSidebarOpen(true);
+      } else if (key === 'ArrowRight') {
+        setIsSidebarOpen(false);
+      } else if (key === 'Enter' || key === ' ' || key === 'MediaPlayPause') {
+        videoPlayerRef.current?.togglePlayPause();
+      }
+    };
+
+    window.addEventListener('keydown', handleRemoteKeyDown);
+    return () => window.removeEventListener('keydown', handleRemoteKeyDown);
+  }, [channels, searchQuery, selectedChannel]);
 
   const handleFileUpload = async (content: string, filename: string) => {
     setIsLoading(true);
@@ -292,6 +339,7 @@ function App() {
             )}
             
             <VideoPlayer 
+              ref={videoPlayerRef}
               channel={selectedChannel} 
               onAddToCategory={handleAddToCategory}
             />

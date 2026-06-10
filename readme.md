@@ -8,6 +8,16 @@ No flashy features, popups or drama. Just plain IPTV streaming and m3u file mana
 
 Node 20+
 
+## Instant Fun
+
+http://samnan.github.io/iptv/ 
+
+Load channels from same url ...
+
+http://samnan.github.io/iptv/channels/Kids.m3u
+...
+
+
 ## Running the application
 
 Clone this repo

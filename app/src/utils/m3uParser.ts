@@ -50,7 +50,7 @@ export function generateM3U(channels: Channel[]): string {
   
   channels.forEach(channel => {
     const logo = channel.logo ? ` tvg-logo="${channel.logo}"` : '';
-    const group = channel.group ? ` group-title="${channel.group}"` : '';
+    const group = ''; // channel.group ? ` group-title="${channel.group}"` : '';
     
     content += `#EXTINF:-1${logo}${group},${channel.name}\n`;
     content += `${channel.url}\n\n`;

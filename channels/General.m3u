@@ -1,17 +1,32 @@
 #EXTM3U
 
-#EXTINF:-1 tvg-logo="https://cdn.uc.assets.prezly.com/f12e798d-6da4-46e1-8ec5-e391d6762659/InWonder_portrait-purple.png" group-title="Science",InWonder (1080p)
+#EXTINF:-1 tvg-logo="https://cdn.uc.assets.prezly.com/f12e798d-6da4-46e1-8ec5-e391d6762659/InWonder_portrait-purple.png",InWonder (1080p)
 https://amg00861-terninternation-inwonder-samsungau-1k63k.amagi.tv/playlist/amg00861-terninternation-inwonder-samsungau/playlist.m3u8
 
-#EXTINF:-1 tvg-logo="https://i.imgur.com/fIi8o0C.png" group-title="Relax",MyZen TV (1080p)
+#EXTINF:-1 tvg-logo="https://i.imgur.com/fIi8o0C.png",MyZen TV (1080p)
 https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg01255-secomcofites-my-myzen-en-plex/playlist.m3u8
 
-#EXTINF:-1 tvg-logo="https://static.frequency.com/studio/itv/channels/1224-400x200.png" group-title="Relax;Travel",Space Live powered by sen (1080p)
+#EXTINF:-1 tvg-logo="https://static.frequency.com/studio/itv/channels/1224-400x200.png",Space Live powered by sen (1080p)
 https://880ca9c9341c405f83d8664a18cc7134.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-1224-SPACELIVE-LG-UK/mt/lg-uk/1224/hls/master/playlist.m3u8
 
-#EXTINF:-1 tvg-logo="https://i.imgur.com/Vhv5gjN.png" group-title="Documentary;Education;Outdoor;Relax",WildEarth (1080p)
+#EXTINF:-1 tvg-logo="https://i.imgur.com/Vhv5gjN.png",WildEarth (1080p)
 https://dqga3jatxofgx.cloudfront.net/WildEarth.m3u8
 
-#EXTINF:-1 tvg-logo="https://jiotvimages.cdn.jio.com/dare_images/images/Food_Food.png" group-title="Cooking;Lifestyle",Food Food (576p)
+#EXTINF:-1 tvg-logo="https://jiotvimages.cdn.jio.com/dare_images/images/Food_Food.png",Food Food (576p)
 https://mumt03.tangotv.in/FOODFOOD/index.m3u8
+
+#EXTINF:-1 tvg-logo="https://i.imgur.com/QmgaPSi.png",EmanTv (1080p)
+https://avr.host247.net/live/emantv/playlist.m3u8
+
+#EXTINF:-1 tvg-logo="https://upload.wikimedia.org/wikipedia/en/8/82/Positiv_TV_Network_Logo.png",Positiv TV (1080p)
+https://livecdn.use1-0004.jwplive.com/live/sites/fGLyccP5/media/FoWynVnP/live.isml/.m3u8
+
+#EXTINF:-1 tvg-logo="https://i.imgur.com/yH7n2dF.png",The Pet Collective (720p)
+https://the-pet-collective-international-gb.samsung.wurl.tv/playlist.m3u8
+
+#EXTINF:-1 tvg-logo="https://i.imgur.com/RiWg1IA.png",TVS Hi Tops (720p)
+https://rpn.bozztv.com/gusa/gusa-hitops/index.m3u8
+
+#EXTINF:-1 tvg-logo="https://upload.wikimedia.org/wikipedia/en/thumb/3/35/ABC_Entertains_logo.svg/960px-ABC_Entertains_logo.svg.png",ABC Entertains (720p)
+https://c.mjh.nz/abc-me.m3u8
 
